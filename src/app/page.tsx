@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Sparkles,
 } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
 import { Card, CardBody } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Ring } from "@/components/ui/progress";
@@ -40,6 +41,8 @@ function greeting() {
 
 export default function Home() {
   const [logOpen, setLogOpen] = useState(false);
+  const { user } = useUser();
+  const firstName = user?.firstName;
   const streak = useStreak();
   const todayMin = useTodayMinutes();
   const goal = useStore((s) => s.settings.goal.dailyMinutes);
@@ -57,7 +60,10 @@ export default function Home() {
       {/* Hero */}
       <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm text-muted">{greeting()}</p>
+          <p className="text-sm text-muted">
+            {greeting()}
+            {firstName ? `, ${firstName}` : ""}
+          </p>
           <h1 className="font-display text-3xl font-semibold tracking-tight md:text-4xl">
             Ready to play?
           </h1>

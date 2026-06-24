@@ -66,13 +66,13 @@ function AccountButton({ compact = false }: { compact?: boolean }) {
     <SignInButton mode="modal">
       <button
         className={cn(
-          "inline-flex items-center gap-2 rounded-lg border border-border bg-surface-2 font-medium text-text transition-colors hover:bg-surface-3",
-          compact ? "h-10 w-10 justify-center" : "w-full px-3 py-2.5 text-sm",
+          "inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface-2 font-medium text-text transition-colors hover:bg-surface-3",
+          compact ? "h-9 px-2.5 text-sm" : "w-full px-3 py-2.5 text-sm",
         )}
         aria-label="Sign in to sync"
       >
-        <LogIn size={compact ? 18 : 16} />
-        {!compact && "Sign in to sync"}
+        <LogIn size={16} />
+        {compact ? "Sign in" : "Sign in to sync"}
       </button>
     </SignInButton>
   );
