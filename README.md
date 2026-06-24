@@ -1,5 +1,7 @@
 # 🎸 Fretwise
 
+**Live:** https://fretwise-vert.vercel.app
+
 Your daily guitar studio — lessons, practice rounds, a metronome, an interactive
 fretboard, and a practice tracker, in one calm place. Built to open every day.
 
