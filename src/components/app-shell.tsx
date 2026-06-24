@@ -13,10 +13,13 @@ import {
   Flame,
   Timer,
 } from "lucide-react";
+import { LogIn } from "lucide-react";
+import { SignInButton, UserButton, useAuth } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/brand";
 import { useTheme } from "@/components/theme-provider";
 import { useStreak, useEnsureHydrated } from "@/lib/store";
+import { useCloudSync } from "@/hooks/use-cloud-sync";
 
 const NAV = [
   { href: "/", label: "Today", icon: Home },
@@ -44,6 +47,37 @@ function ThemeToggle() {
   );
 }
 
+function AccountButton({ compact = false }: { compact?: boolean }) {
+  const { isLoaded, isSignedIn } = useAuth();
+
+  // Avoid a flash before Clerk resolves the session.
+  if (!isLoaded) return <span className={compact ? "h-10 w-10" : "h-10 w-full"} aria-hidden />;
+
+  if (isSignedIn) {
+    return (
+      <div className={cn("flex items-center", compact ? "" : "gap-2 px-1")}>
+        <UserButton />
+        {!compact && <span className="text-sm text-muted">Synced</span>}
+      </div>
+    );
+  }
+
+  return (
+    <SignInButton mode="modal">
+      <button
+        className={cn(
+          "inline-flex items-center gap-2 rounded-lg border border-border bg-surface-2 font-medium text-text transition-colors hover:bg-surface-3",
+          compact ? "h-10 w-10 justify-center" : "w-full px-3 py-2.5 text-sm",
+        )}
+        aria-label="Sign in to sync"
+      >
+        <LogIn size={compact ? 18 : 16} />
+        {!compact && "Sign in to sync"}
+      </button>
+    </SignInButton>
+  );
+}
+
 function StreakChip() {
   const streak = useStreak();
   return (
@@ -61,6 +95,7 @@ function StreakChip() {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   useEnsureHydrated();
+  useCloudSync();
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-6xl">
@@ -103,9 +138,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             Metronome
           </Link>
         </nav>
-        <div className="mt-auto flex items-center justify-between px-1">
-          <ThemeToggle />
-          <StreakChip />
+        <div className="mt-auto flex flex-col gap-3">
+          <div className="flex items-center justify-between px-1">
+            <ThemeToggle />
+            <StreakChip />
+          </div>
+          <AccountButton />
         </div>
       </aside>
 
@@ -119,6 +157,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2">
             <StreakChip />
             <ThemeToggle />
+            <AccountButton compact />
           </div>
         </header>
 

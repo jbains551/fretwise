@@ -1,19 +1,14 @@
 /**
- * User identity for the sync API.
+ * User identity for the sync API — backed by Clerk.
  *
- * Local-first by default: every request maps to a single "local" user. When you
- * add Clerk (see README), replace the body of `getUserId` with:
- *
- *   import { auth } from "@clerk/nextjs/server";
- *   const { userId } = await auth();
- *   return userId;
- *
- * The client sends its Clerk session automatically once ClerkProvider wraps the
- * app, so no other change is needed here.
+ * `auth()` reads the signed-in user from the request (attached by the Clerk
+ * proxy in `src/proxy.ts`). Returns null when signed out, so `/api/sync`
+ * responds 401 and the app falls back to its local-first behavior.
  */
 
-export async function getUserId(req: Request): Promise<string | null> {
-  // Until Clerk is wired up, allow an explicit header for testing, else "local".
-  const header = req.headers.get("x-user-id");
-  return header || "local";
+import { auth } from "@clerk/nextjs/server";
+
+export async function getUserId(_req: Request): Promise<string | null> {
+  const { userId } = await auth();
+  return userId;
 }
