@@ -1,26 +1,189 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------ */
+/*  Fretwise design tokens                                            */
+/*  Warm "practice studio" aesthetic: espresso + honey + amber.       */
+/*  Light is the default; `.dark` on <html> switches to the studio.   */
+/* ------------------------------------------------------------------ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --radius: 0.9rem;
+
+  /* Warm neutrals (light) */
+  --bg: 38 36% 96%;          /* warm cream */
+  --surface: 0 0% 100%;
+  --surface-2: 40 30% 94%;
+  --surface-3: 38 24% 89%;
+  --border: 36 20% 84%;
+  --text: 28 25% 14%;
+  --muted: 30 8% 42%;
+
+  /* Brand */
+  --accent: 32 95% 50%;      /* honey amber */
+  --accent-fg: 30 60% 12%;
+  --ember: 14 86% 56%;       /* warm ember/orange */
+  --gold: 43 96% 56%;
+
+  /* Status */
+  --success: 152 52% 40%;
+  --info: 200 70% 46%;
+  --danger: 0 72% 52%;
+
+  /* Wood tones used by the fretboard */
+  --wood-1: 28 42% 30%;
+  --wood-2: 26 40% 24%;
+  --string: 40 12% 70%;
+}
+
+.dark {
+  --bg: 28 18% 8%;           /* espresso */
+  --surface: 26 16% 11%;
+  --surface-2: 26 15% 14%;
+  --surface-3: 26 14% 18%;
+  --border: 28 12% 22%;
+  --text: 38 30% 92%;
+  --muted: 34 10% 62%;
+
+  --accent: 36 96% 56%;
+  --accent-fg: 30 60% 10%;
+  --ember: 16 88% 60%;
+  --gold: 43 96% 60%;
+
+  --success: 152 46% 52%;
+  --info: 200 72% 60%;
+  --danger: 0 72% 62%;
+
+  --wood-1: 26 38% 26%;
+  --wood-2: 24 36% 18%;
+  --string: 40 10% 64%;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: hsl(var(--bg));
+  --color-surface: hsl(var(--surface));
+  --color-surface-2: hsl(var(--surface-2));
+  --color-surface-3: hsl(var(--surface-3));
+  --color-border: hsl(var(--border));
+  --color-text: hsl(var(--text));
+  --color-muted: hsl(var(--muted));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-fg: hsl(var(--accent-fg));
+  --color-ember: hsl(var(--ember));
+  --color-gold: hsl(var(--gold));
+
+  --color-success: hsl(var(--success));
+  --color-info: hsl(var(--info));
+  --color-danger: hsl(var(--danger));
+
+  --color-wood-1: hsl(var(--wood-1));
+  --color-wood-2: hsl(var(--wood-2));
+  --color-string: hsl(var(--string));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 0.35rem);
+  --radius-sm: calc(var(--radius) - 0.55rem);
+  --radius-xl: calc(var(--radius) + 0.4rem);
+
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), Georgia, serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: hsl(var(--border));
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: hsl(var(--bg));
+  color: hsl(var(--text));
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
+
+/* Subtle warm radial glow on the app background */
+.app-aurora {
+  background-image:
+    radial-gradient(60rem 40rem at 80% -10%, hsl(var(--accent) / 0.10), transparent 60%),
+    radial-gradient(50rem 36rem at -10% 10%, hsl(var(--ember) / 0.08), transparent 55%);
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.92); opacity: 0.8; }
+  70% { transform: scale(1.25); opacity: 0; }
+  100% { opacity: 0; }
+}
+
+@keyframes beat-flash {
+  0% { transform: scale(1); }
+  18% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sheetUp {
+  from { opacity: 0; transform: translateY(12px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-rise { animation: riseIn .4s ease-out both; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Range slider */
+.fw-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    hsl(var(--accent)) 0%,
+    hsl(var(--accent)) var(--pct, 50%),
+    hsl(var(--surface-3)) var(--pct, 50%),
+    hsl(var(--surface-3)) 100%
+  );
+  outline: none;
+  cursor: pointer;
+}
+.fw-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: hsl(var(--surface));
+  border: 3px solid hsl(var(--accent));
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.25);
+  cursor: grab;
+}
+.fw-slider::-webkit-slider-thumb:active { cursor: grabbing; }
+.fw-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: hsl(var(--surface));
+  border: 3px solid hsl(var(--accent));
+  cursor: grab;
+}
+
+/* Numbers that should line up (timers, BPM) */
+.tabular { font-variant-numeric: tabular-nums; }
